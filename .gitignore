@@ -1,0 +1,13 @@
+/*
+!/.gitignore
+!/code/
+!/configs/
+!/scripts/
+!/requirements.txt
+
+__pycache__/
+*.py[cod]
+.env
+.env.*
+README*
+AGENTS.md

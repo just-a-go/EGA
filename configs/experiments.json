@@ -1,0 +1,218 @@
+{
+  "seed": 27,
+  "controller_seeds": [
+    27,
+    28,
+    29
+  ],
+  "protocol": {
+    "max_input_tokens": 4096,
+    "max_output_tokens": 2048,
+    "max_evidence_tokens": 1024
+  },
+  "controller": {
+    "seed": 27,
+    "prefix_lengths": [
+      0,
+      1,
+      3
+    ],
+    "actions_per_state": 3,
+    "learning_rate": 0.001,
+    "epochs": 100,
+    "patience": 10
+  },
+  "adapter": {
+    "seed": 27,
+    "learning_rate": 0.001,
+    "weight_decay": [
+      0.0,
+      0.01
+    ],
+    "epochs": 100,
+    "patience": 10
+  },
+  "models": {
+    "QT": {
+      "name": "Qwen2.5-7B-Instruct",
+      "path": "/data0/pretrained/Qwen2.5-7B-Instruct",
+      "kind": "text",
+      "thinking": false
+    },
+    "Q3": {
+      "name": "Qwen3-8B",
+      "path": "/data0/pretrained/Qwen3-8B",
+      "kind": "text",
+      "thinking": false
+    },
+    "GLM": {
+      "name": "GLM-4-32B-0414",
+      "path": "/data0/pretrained/GLM-4-32B-0414",
+      "kind": "text",
+      "thinking": false
+    },
+    "G3": {
+      "name": "Gemma-3-12B-it",
+      "path": "/data0/pretrained/Gemma-3-12B-it",
+      "kind": "text",
+      "thinking": false
+    },
+    "QO": {
+      "name": "Qwen2.5-Omni-7B",
+      "path": "/data0/pretrained/Qwen2.5-Omni-7B-Thinker",
+      "kind": "omni25",
+      "thinking": false
+    },
+    "MC": {
+      "name": "MiniCPM-o-2_6",
+      "path": "/data0/pretrained/MiniCPM-o-2_6",
+      "kind": "minicpm",
+      "thinking": false
+    },
+    "Q3O": {
+      "name": "Qwen3-Omni-30B-A3B-Thinking",
+      "path": "/data0/pretrained/Qwen3-Omni-30B-A3B-Thinking",
+      "kind": "omni3",
+      "thinking": true
+    },
+    "PM": {
+      "name": "Phi-4-multimodal-instruct",
+      "path": "/data0/pretrained/Phi-4-multimodal-instruct",
+      "kind": "phi4",
+      "thinking": false
+    }
+  },
+  "tasks": {
+    "daic": {
+      "format": "daic",
+      "family": "daic",
+      "track": "A+T",
+      "label_column": "PHQ8_Binary",
+      "id_column": "Participant_ID",
+      "splits": {
+        "train": {
+          "ids_file": "manifests/daic_woz/train.txt",
+          "label_csv": "/data0/data/ECRL-MH-data/DAIC-WOZ/train_split_Depression_AVEC2017.csv",
+          "expected_n": 107
+        },
+        "dev": {
+          "ids_file": "manifests/daic_woz/dev.txt",
+          "label_csv": "/data0/data/ECRL-MH-data/DAIC-WOZ/dev_split_Depression_AVEC2017.csv",
+          "expected_n": 35
+        },
+        "test": {
+          "ids_file": "manifests/daic_woz/test.txt",
+          "label_csv": "/data0/data/ECRL-MH-data/DAIC-WOZ/full_test_split.csv",
+          "expected_n": 47,
+          "label_column": "PHQ_Binary"
+        }
+      },
+      "manifest": "manifests/tasks/daic.jsonl",
+      "instruction": "Assess depression screening status under the source PHQ-8 label definition.",
+      "transcript_pattern": "/data0/data/ECRL-MH-data/DAIC-WOZ/data/{id}_TRANSCRIPT.csv",
+      "audio_pattern": "/data0/data/ECRL-MH-data/DAIC-WOZ/data/{id}_AUDIO.wav"
+    },
+    "ptsd": {
+      "format": "jsonl",
+      "family": "daic",
+      "track": "A+T",
+      "manifest": "manifests/tasks/ptsd.jsonl",
+      "instruction": "Assess PTSD screening status under the source PCL label definition."
+    },
+    "eatd": {
+      "format": "jsonl",
+      "manifest": "manifests/tasks/eatd.jsonl",
+      "track": "A+T",
+      "instruction": "Assess depression screening status using the source SDS label definition.",
+      "transfer": "daic"
+    },
+    "mmpsy_depression": {
+      "format": "jsonl",
+      "manifest": "manifests/tasks/mmpsy_depression.jsonl",
+      "track": "T",
+      "instruction": "Assess depression screening status using the source PHQ label definition."
+    },
+    "mmpsy_anxiety": {
+      "format": "jsonl",
+      "manifest": "manifests/tasks/mmpsy_anxiety.jsonl",
+      "track": "T",
+      "instruction": "Assess anxiety screening status using the source GAD label definition."
+    },
+    "dvlog": {
+      "format": "jsonl",
+      "manifest": "manifests/tasks/dvlog.jsonl",
+      "track": "F",
+      "instruction": "Assess depression status under the released D-Vlog binary labels."
+    },
+    "modma": {
+      "format": "jsonl",
+      "manifest": "manifests/tasks/modma.jsonl",
+      "track": "A",
+      "instruction": "Classify the source MODMA major depressive disorder versus healthy control label.",
+      "evaluation": "nested"
+    }
+  },
+  "tables": {
+    "4": [
+      [
+        "daic",
+        "QO"
+      ],
+      [
+        "daic",
+        "PM"
+      ]
+    ]
+  },
+  "reader": {
+    "enabled": true,
+    "annotations": "manifests/reader/items.jsonl",
+    "epochs": 100,
+    "patience": 10,
+    "learning_rate": 0.001,
+    "consistency_weight": 0.1,
+    "presence_thresholds": [
+      0.3,
+      0.5,
+      0.7
+    ],
+    "max_positions": 2048,
+    "audio_frame_seconds": 0.1,
+    "ontology": {
+      "speaker": [
+        "unknown",
+        "participant",
+        "interviewer",
+        "other"
+      ],
+      "experiencer": [
+        "unknown",
+        "self",
+        "other"
+      ],
+      "time": [
+        "unknown",
+        "current",
+        "past",
+        "future"
+      ],
+      "polarity": [
+        "unknown",
+        "affirmed",
+        "denied"
+      ],
+      "degree": [
+        "unknown",
+        "mild",
+        "moderate",
+        "severe"
+      ],
+      "status": [
+        "unknown",
+        "self_report",
+        "measurement",
+        "interpretation"
+      ]
+    }
+  }
+}
